@@ -55,8 +55,8 @@
                                 <td>{{ server.type }}</td>
                                 <td>
                                     <span class="badge"
-                                    [ngClass]="[server.statusEnum === Status.SERVER_UP ? ' badge-success' : 'badge-danger']">
-                                       {{ server.statusEnum === Status.SERVER_UP ? 'SERVER UP' : 'SERVER DOWN' }}
+                                    [ngClass]="server.statusEnum | statusClass">
+                                       {{ server.statusEnum | statusText }}
                                     </span>
                                 </td>
                                 <td>

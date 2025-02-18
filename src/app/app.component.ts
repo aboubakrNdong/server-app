@@ -16,7 +16,6 @@ export class AppComponent implements OnInit {
   readonly DataState = DataState;
   readonly Status = Status;
 
-
   constructor(private serverService: ServerService) {
 
   }
