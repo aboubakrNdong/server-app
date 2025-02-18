@@ -8,5 +8,5 @@ export interface Server {
     memory: string;
     type: string;
     imageUrl: string;
-    status: Status;
+    statusEnum: Status;
 }
