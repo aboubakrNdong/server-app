@@ -1,4 +1,4 @@
-<app-server-show></app-server-show>
+<app-navbar-server-show></app-navbar-server-show>
 
 <ng-container *ngIf="(appState$ | async) as appState" [ngSwitch]="appState.dataState">
     <ng-container *ngSwitchCase="DataState.LOADING_STATE">

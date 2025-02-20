@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ServerModalComponent } from './server-modal.component';
+import { NavbarServerComponent } from './navbar-server.component';
 
-describe('ServerModalComponent', () => {
-  let component: ServerModalComponent;
-  let fixture: ComponentFixture<ServerModalComponent>;
+describe('ServerShowComponent', () => {
+  let component: NavbarServerComponent;
+  let fixture: ComponentFixture<NavbarServerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ServerModalComponent ]
+      declarations: [ NavbarServerComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ServerModalComponent);
+    fixture = TestBed.createComponent(NavbarServerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

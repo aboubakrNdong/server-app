@@ -6,8 +6,6 @@ import { AppState } from 'src/app/interface/app-state';
 import { CustomResponse } from 'src/app/interface/custom-response';
 import { ServerService } from 'src/app/service/server.service';
 
-
-
 @Component({
   selector: 'app-server',
   templateUrl: './server.component.html',

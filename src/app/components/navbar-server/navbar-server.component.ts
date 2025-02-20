@@ -9,11 +9,11 @@ import { ServerService } from 'src/app/service/server.service';
 
 
 @Component({
-  selector: 'app-server-show',
-  templateUrl: './server-show.component.html',
-  styleUrls: ['./server-show.component.css']
+  selector: 'app-navbar-server-show',
+  templateUrl: './navbar-server.component.html',
+  styleUrls: ['./navbar-server.component.css']
 })
-export class ServerShowComponent implements OnInit {
+export class NavbarServerComponent implements OnInit {
 
   appState$: Observable<AppState<CustomResponse>> | undefined;
   readonly DataState = DataState;
@@ -38,9 +38,9 @@ export class ServerShowComponent implements OnInit {
       );
   }
 
-  goToModal(){
+  goToModal() {
     console.log("you have clicked me");
-    this.router.navigate(['showmodal']);
+    this.router.navigate(['addserver']);
   }
 
 }
