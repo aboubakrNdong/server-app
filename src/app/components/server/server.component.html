@@ -32,12 +32,17 @@
                             {{ server.statusEnum | statusText }}
                         </span>
                     </td>
+                   
                     <td>
-                        <a style="cursor: pointer;">
-                            <i class="material-icons" title="Ping server">&#xe328;</i>
-                            <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+                        <a (click)="pingServer(server.ipAddress)" style="cursor: pointer;">
+                            <i *ngIf = "(filterStatus$ | async) === '' || (filterStatus$ | async) !== server.ipAddress"
+                                class="material-icons" title="Ping server">&#xe328;</i>
+
+                            <i *ngIf = "(filterStatus$ | async) == server.ipAddress"
+                             class="fa fa-spinner fa-spin" style="font-size:24px"></i>
                         </a>
                     </td>
+
                     <td>
                         <a class="delete" data-toggle="modal" style="cursor: pointer;"><i class="material-icons"
                                 data-toggle="tooltip" title="Delete">&#xE872;</i></a>

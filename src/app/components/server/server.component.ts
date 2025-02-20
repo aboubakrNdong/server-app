@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { catchError, map, Observable, of, startWith } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, startWith } from 'rxjs';
 import { DataState } from 'src/app/enum/data-state.enum';
 import { Status } from 'src/app/enum/status.enum';
 import { AppState } from 'src/app/interface/app-state';
@@ -12,27 +12,61 @@ import { ServerService } from 'src/app/service/server.service';
   styleUrls: ['./server.component.css']
 })
 export class ServerComponent implements OnInit {
+  
+  appState$: Observable<AppState<CustomResponse | null>> | undefined;
 
-  appState$: Observable<AppState<CustomResponse>> | undefined;
   readonly DataState = DataState;
   readonly Status = Status;
 
-  constructor(private serverService: ServerService) {
+  private filterSubject = new BehaviorSubject<String>('');
+  private dataSubject = new BehaviorSubject<CustomResponse | null>(null);
+  filterStatus$ = this.filterSubject.asObservable();
 
-  }
+  constructor(private serverService: ServerService) { }
 
   ngOnInit(): void {
+    this.loadServers();
+  }
+
+  private loadServers(): void {
     this.appState$ = this.serverService.server$
       .pipe(
-        map(response => {
-          return { dataState: DataState.LOADED_STATE, appData: response }
-        }),
+        map(response => this.handleServerResponse(response)),
         startWith({ dataState: DataState.LOADING_STATE }),
-        catchError((error: string) => {
-          return of({ dataState: DataState.ERROR_STATE, error })
-        })
+        catchError(error => this.handleError(error))
       );
   }
+
+  private handleServerResponse(response: CustomResponse): AppState<CustomResponse | null> {
+    this.dataSubject.next(response);
+    return { dataState: DataState.LOADED_STATE, appData: response };
+  }
+
+  private handleError(error: string): Observable<AppState<CustomResponse | null>> {
+    return of({ dataState: DataState.ERROR_STATE, appData: null, error });
+  }
+
+  pingServer(ipAddress: string): void {
+    this.filterSubject.next(ipAddress);
+    this.appState$ = this.serverService.ping$(ipAddress)
+      .pipe(
+        map(response => this.updateServerStatus(response)),
+        startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
+        catchError(error => this.handleError(error))
+      );
+  }
+
+  private updateServerStatus(response: CustomResponse): AppState<CustomResponse | null> {
+    const servers = this.dataSubject.value?.data.servers ?? [];
+    const index = servers.findIndex(server => server.id === response.data.server?.id);
+    if (index >= 0) {
+      servers[index] = response.data.server ?? servers[index];
+    }
+    this.filterSubject.next('');
+    return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value };
+  }
+
+
 
 }
 
