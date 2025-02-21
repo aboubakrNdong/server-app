@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { BehaviorSubject, catchError, map, Observable, of, startWith } from 'rxjs';
 import { DataState } from 'src/app/enum/data-state.enum';
 import { Status } from 'src/app/enum/status.enum';
@@ -12,7 +13,7 @@ import { ServerService } from 'src/app/service/server.service';
   styleUrls: ['./server.component.css']
 })
 export class ServerComponent implements OnInit {
-  
+
   appState$: Observable<AppState<CustomResponse | null>> | undefined;
 
   readonly DataState = DataState;
@@ -29,7 +30,7 @@ export class ServerComponent implements OnInit {
   }
 
   private loadServers(): void {
-    this.appState$ = this.serverService.server$
+    this.appState$ = this.serverService.getServer$
       .pipe(
         map(response => this.handleServerResponse(response)),
         startWith({ dataState: DataState.LOADING_STATE }),
@@ -48,7 +49,7 @@ export class ServerComponent implements OnInit {
 
   pingServer(ipAddress: string): void {
     this.filterSubject.next(ipAddress);
-    this.appState$ = this.serverService.ping$(ipAddress)
+    this.appState$ = this.serverService.pingServer$(ipAddress)
       .pipe(
         map(response => this.updateServerStatus(response)),
         startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
@@ -65,8 +66,6 @@ export class ServerComponent implements OnInit {
     this.filterSubject.next('');
     return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value };
   }
-
-
 
 }
 

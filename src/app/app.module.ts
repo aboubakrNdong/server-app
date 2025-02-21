@@ -9,6 +9,10 @@ import { StatusTextPipe } from './pipes/status-text.pipe';
 import { ServerComponent } from './components/server/server.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NavbarServerComponent } from './components/navbar-server/navbar-server.component';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common'; 
+import { AddServerComponent } from './components/add-server/add-server.component';
+
 
 
 @NgModule({
@@ -17,13 +21,16 @@ import { NavbarServerComponent } from './components/navbar-server/navbar-server.
     StatusClassPipe,
     StatusTextPipe,
     ServerComponent,
-    NavbarServerComponent
+    NavbarServerComponent,
+    AddServerComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     NgbModule,
+    FormsModule,
+    CommonModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

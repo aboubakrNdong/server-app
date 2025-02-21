@@ -22,7 +22,6 @@ export class NavbarServerComponent {
   }
 
   goToModal() {
-    console.log("you have clicked me");
     this.router.navigate(['addserver']);
   }
 

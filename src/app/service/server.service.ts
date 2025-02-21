@@ -12,28 +12,29 @@ export class ServerService {
 
   constructor(private http: HttpClient) { }
 
-  server$ = <Observable<CustomResponse>>
+  getServer$ = <Observable<CustomResponse>>
     this.http.get<CustomResponse>(`${this.apiUrl}/server/getservers`)
       .pipe(
         tap(console.log),
         catchError(this.handleError)
       );
 
-  save$ = (server: Server) => <Observable<CustomResponse>>
-    this.http.post<CustomResponse>(`${this.apiUrl}/server/saveserver`, server)
+  saveServer$ = (server: Server): Observable<CustomResponse> => {
+    return this.http.post<CustomResponse>(`${this.apiUrl}/server/saveserver`, server)
       .pipe(
-        tap(console.log),
+        tap(response => console.log("Server save response:", response)),
         catchError(this.handleError)
       );
+  };
 
-  ping$ = (ipAddress: String) => <Observable<CustomResponse>>
+  pingServer$ = (ipAddress: String) => <Observable<CustomResponse>>
     this.http.get<CustomResponse>(`${this.apiUrl}/server/pingserver/${ipAddress}`)
       .pipe(
         tap(console.log),
         catchError(this.handleError)
       );
 
-  delete$ = (serverId: number) => <Observable<CustomResponse>>
+  deleteServer$ = (serverId: number) => <Observable<CustomResponse>>
     this.http.delete<CustomResponse>(`${this.apiUrl}/server/delete/${serverId}`)
       .pipe(
         tap(console.log),
@@ -45,10 +46,6 @@ export class ServerService {
     console.log(error);
     return throwError(() => `An error occurred - Error code: ${error.status}`);
   }
-
-
-
-
 
 
 }
