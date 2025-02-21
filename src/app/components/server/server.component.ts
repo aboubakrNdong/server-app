@@ -40,7 +40,8 @@ export class ServerComponent implements OnInit {
 
   private handleServerResponse(response: CustomResponse): AppState<CustomResponse | null> {
     this.dataSubject.next(response);
-    return { dataState: DataState.LOADED_STATE, appData: response };
+    return { dataState: DataState.LOADED_STATE, appData:{ ...response, data:
+       { servers: response.data.servers?.reverse() } }};
   }
 
   private handleError(error: string): Observable<AppState<CustomResponse | null>> {
@@ -66,6 +67,19 @@ export class ServerComponent implements OnInit {
     this.filterSubject.next('');
     return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value };
   }
+
+
+  deleteServer(ipAddress: string): void {
+    this.filterSubject.next(ipAddress);
+    this.appState$ = this.serverService.pingServer$(ipAddress)
+      .pipe(
+        map(response => this.updateServerStatus(response)),
+        startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
+        catchError(error => this.handleError(error))
+      );
+  }
+
+  
 
 }
 
