@@ -32,7 +32,7 @@
                             {{ server.statusEnum | statusText }}
                         </span>
                     </td>
-                   
+
                     <td>
                         <a (click)="pingServer(server.ipAddress)" style="cursor: pointer;">
                             <i *ngIf = "(filterStatus$ | async) === '' || (filterStatus$ | async) !== server.ipAddress"
@@ -56,3 +56,4 @@
         </div>
     </ng-container>
 </ng-container>
+<notifier-container></notifier-container>

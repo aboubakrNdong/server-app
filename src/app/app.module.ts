@@ -12,6 +12,8 @@ import { NavbarServerComponent } from './components/navbar-server/navbar-server.
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common'; 
 import { AddServerComponent } from './components/add-server/add-server.component';
+import { NotificationModule } from './notification.module';
+import { NotifierModule } from 'angular-notifier';
 
 
 
@@ -31,6 +33,8 @@ import { AddServerComponent } from './components/add-server/add-server.component
     NgbModule,
     FormsModule,
     CommonModule,
+    NotificationModule,
+    NotifierModule
   ],
   providers: [],
   bootstrap: [AppComponent]

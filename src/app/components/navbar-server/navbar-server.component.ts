@@ -5,6 +5,7 @@ import { DataState } from 'src/app/enum/data-state.enum';
 import { Status } from 'src/app/enum/status.enum';
 import { AppState } from 'src/app/interface/app-state';
 import { CustomResponse } from 'src/app/interface/custom-response';
+import { NotificationService } from 'src/app/service/notification.service';
 
 
 @Component({
@@ -18,34 +19,36 @@ export class NavbarServerComponent {
   readonly DataState = DataState;
   readonly Status = Status;
 
-  constructor(private router: Router) {
+  constructor(private router: Router,
+    private notification: NotificationService
+  ) {
   }
 
   goToModal() {
     this.router.navigate(['addserver']);
   }
 
-
   printReport(): void {
     const tableElement = this.getTableElement('servers');
     if (!tableElement) {
-        console.error('Table not found');
-        return;
+      console.error('Table not found');
+      return;
     }
 
     const tableHtml = this.prepareTableHtml(tableElement);
     this.downloadReport(tableHtml, 'server-report.xls');
-}
+  }
 
-private getTableElement(tableId: string): HTMLElement | null {
+  private getTableElement(tableId: string): HTMLElement | null {
     return document.getElementById(tableId);
-}
+  }
 
-private prepareTableHtml(tableElement: HTMLElement): string {
+  private prepareTableHtml(tableElement: HTMLElement): string {
     return tableElement.outerHTML.replace(/ /g, '%20');
-}
+  }
 
-private downloadReport(tableHtml: string, fileName: string): void {
+  private downloadReport(tableHtml: string, fileName: string): void {
+    this.notification.onDefault('Report downloaded');
     const dataType = 'application/vnd.ms-excel.sheet.macroEnabled.12';
     const downloadLink = document.createElement('a');
     document.body.appendChild(downloadLink);
@@ -53,7 +56,7 @@ private downloadReport(tableHtml: string, fileName: string): void {
     downloadLink.download = fileName;
     downloadLink.click();
     document.body.removeChild(downloadLink);
-}
+  }
 
 
 }

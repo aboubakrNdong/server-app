@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { NotifierService } from 'angular-notifier';
 import { BehaviorSubject, catchError, map, Observable, of, startWith } from 'rxjs';
 import { DataState } from 'src/app/enum/data-state.enum';
 import { Status } from 'src/app/enum/status.enum';
 import { AppState } from 'src/app/interface/app-state';
 import { CustomResponse } from 'src/app/interface/custom-response';
+import { NotificationService } from 'src/app/service/notification.service';
 import { ServerService } from 'src/app/service/server.service';
 
 @Component({
@@ -23,7 +25,10 @@ export class ServerComponent implements OnInit {
   private dataSubject = new BehaviorSubject<CustomResponse | null>(null);
   filterStatus$ = this.filterSubject.asObservable();
 
-  constructor(private serverService: ServerService) { }
+  constructor(private serverService: ServerService,
+    // private notifier: NotifierService,
+    private notification: NotificationService
+  ) { }
 
   ngOnInit(): void {
     this.loadServers();
@@ -39,12 +44,21 @@ export class ServerComponent implements OnInit {
   }
 
   private handleServerResponse(response: CustomResponse): AppState<CustomResponse | null> {
+    this.notification.onDefault(response.message);
+
     this.dataSubject.next(response);
-    return { dataState: DataState.LOADED_STATE, appData:{ ...response, data:
-       { servers: response.data.servers?.reverse() } }};
+    // this.notifier.notify('success', 'You are awesome! I mean it!');
+
+    return {
+      dataState: DataState.LOADED_STATE, appData: {
+        ...response, data:
+          { servers: response.data.servers?.reverse() }
+      }
+    };
   }
 
   private handleError(error: string): Observable<AppState<CustomResponse | null>> {
+    this.notification.onError(error);
     return of({ dataState: DataState.ERROR_STATE, appData: null, error });
   }
 
@@ -79,7 +93,7 @@ export class ServerComponent implements OnInit {
       );
   }
 
-  
+
 
 }
 

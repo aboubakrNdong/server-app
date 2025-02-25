@@ -28,30 +28,41 @@ export class AddServerComponent {
 
   constructor(private serverService: ServerService) { }
 
-
   saveServer(serverForm: NgForm): void {
     this.isLoading.next(true);
     this.appState$ = this.serverService.saveServer$(serverForm.value as Server)
       .pipe(
-        map(response => {
-          if (response.data.server) {
-            this.dataSubject.next({
-              ...response,
-              data: {
-                servers: [response.data.server, ...(this.dataSubject.value?.data.servers ?? [])]
-              }
-            });
-            this.isLoading.next(false);
-            serverForm.resetForm({ status: this.Status.SERVER_DOWN });
-          }
-          return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value };
-        }),
-        startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
-      catchError(error => this.handleErrorSave(error))
-    );
+        map(response => this.handleSaveResponse(response, serverForm)),
+        startWith(this.getInitialAppState()),
+        catchError(error => this.handleErrorSave(error))
+      );
   }
 
-  
+  private handleSaveResponse(response: CustomResponse, serverForm: NgForm): AppState<CustomResponse | null> {
+    if (response.data.server) {
+      this.updateDataSubject(response);
+      this.resetForm(serverForm);
+    }
+    return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value };
+  }
+
+  private updateDataSubject(response: CustomResponse): void {
+    this.dataSubject.next({
+      ...response,
+      data: {
+        servers: [response.data.server as Server, ...(this.dataSubject.value?.data.servers ?? [])]
+      }
+    });
+  }
+
+  private resetForm(serverForm: NgForm): void {
+    this.isLoading.next(false);
+    serverForm.resetForm({ status: this.Status.SERVER_DOWN });
+  }
+
+  private getInitialAppState(): AppState<CustomResponse | null> {
+    return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value };
+  }
 
   private handleErrorSave(error: string): Observable<AppState<CustomResponse | null>> {
     this.isLoading.next(false);
